@@ -1,0 +1,9 @@
+[2024-02-12T02:47:53.963Z] Data received - Device ID: Device3, Data: Games
+[2024-02-12T02:53:07.617Z] Device registered - Device ID: Device1, Device Type: Mobile
+[2024-02-12T20:22:29.603Z] Device registered - Device ID: hgui, Device Type: router
+[2024-02-13T02:38:52.571Z] Data received - Device ID: 12345, Data: success
+[2024-02-13T02:38:54.575Z] Data received - Device ID: 12345, Data: success
+[2024-02-13T02:39:09.494Z] Command sent - Device ID: 34567, Command: get the message
+[2024-02-13T02:39:10.828Z] Command sent - Device ID: 34567, Command: get the message
+[2024-02-13T02:39:30.454Z] Device registered - Device ID: 2345, Device Type: Mobile
+[2024-02-13T04:43:41.629Z] Device registered - Device ID: device 2 , Device Type: printer
