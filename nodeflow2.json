@@ -1,0 +1,797 @@
+[
+    {
+        "id": "3fb969b36fd6b3f2",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "aa447fca7758858c",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Fuel consumption",
+        "func": "// Simulate fuel consumption\nfunction generateFuelConsumption(speed, engineTemperature) {\n    // Base fuel consumption as miles per gallon (mpg) or liters per 100km\n    let baseFuelConsumption = 30; // Example base value, assuming 30 mpg\n\n    // Adjust fuel consumption based on speed and engine temperature\n    // Typically, fuel consumption increases as speed goes beyond an optimal range\n    // or if the engine temperature is too high.\n    if (speed > 60) {\n        baseFuelConsumption -= (speed - 60) * 0.2;\n    }\n    if (engineTemperature > 200) {\n        baseFuelConsumption -= (engineTemperature - 200) * 0.1;\n    }\n\n    // Add some randomness to simulate real-world variations\n    let randomVariation = Math.random() * 2; // +/- 1 mpg\n    baseFuelConsumption += (randomVariation - 1);\n\n    // Ensure fuel consumption doesn't go below a threshold\n    if (baseFuelConsumption < 10) {\n        baseFuelConsumption = 10; // Minimum fuel consumption\n    }\n\n    return baseFuelConsumption;\n}\n\n// Input parameters (speed and engine temperature) should be available as msg.payload properties\nlet speed = msg.payload.speed;\nlet engineTemperature = msg.payload.engineTemperature;\n\n// Generate fuel consumption\nlet fuelConsumption = generateFuelConsumption(speed, engineTemperature);\n\n// Create a JSON object with the fuel consumption value\nlet msgPayload = {\n    fuelConsumption: fuelConsumption\n};\n\n// Set the payload to the message object\nmsg.payload = msgPayload;\n\n// Return the message object to be passed to the next node\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 160,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "6046d3d1d47b8a20",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Engine temperature",
+        "func": "// Simulate engine temperature\nlet minTemp = 70; // minimum engine temperature\nlet maxTemp = 220; // maximum engine temperature\n// Generate a random engine temperature between minTemp and maxTemp\nlet engineTemperature = Math.floor(Math.random() * (maxTemp - minTemp + 1) + minTemp);\n// Create a JSON object with the value\nlet msgPayload = {\n    engineTemperature: engineTemperature\n};\n// Set the payload to the message object\nmsg.payload = JSON.stringify(msgPayload);\n// Return the message object to be passed to the next node\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 100,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "c2df0ad83b9bfb8c",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Speed",
+        "func": "// Function to simulate speed data\nfunction simulateSpeed() {\n    // Define the speed range (in miles per hour or kilometers per hour)\n    const minSpeed = 0; // Min speed of the vehicle at rest\n    const maxSpeed = 120; // Max speed - hypothetical top speed of the vehicle\n\n    // Randomly decide if the car accelerates or decelerates\n    const change = Math.random() > 0.5 ? 1 : -1;\n\n    // Random acceleration factor between 1 and 5\n    const accelerationFactor = Math.floor(Math.random() * 5 + 1);\n\n    // Retrieve the current speed from the flow context to maintain state\n    let currentSpeed = flow.get('currentSpeed') || 0;\n\n    // Calculate new speed with random acceleration/deceleration\n    currentSpeed += change * accelerationFactor;\n\n    // Ensure the speed stays within the min and max range\n    currentSpeed = Math.max(minSpeed, Math.min(maxSpeed, currentSpeed));\n\n    // Update the flow context with the new speed\n    flow.set('currentSpeed', currentSpeed);\n\n    return currentSpeed;\n}\n\n// Call the simulateSpeed function and assign its value to msg.payload.speed\nmsg.payload = {\n    speed: simulateSpeed() // Simulate speed data\n};\n\n// Return the message object to pass to the next node\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "1004dbe78567f9e7",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Air quality",
+        "func": "// Function to simulate air quality data\nfunction simulateAirQuality() {\n    // Define the AQI range\n    const minAQI = 0; // Good air quality\n    const maxAQI = 500; // Hazardous air quality\n\n    // Generate a random AQI within the range\n    let aqi = Math.floor(Math.random() * (maxAQI - minAQI + 1) + minAQI);\n\n    return aqi;\n}\n\n// Call the simulateAirQuality function and assign its value to msg.payload.airQualityIndex\nmsg.payload = {\n    airQualityIndex: simulateAirQuality() // Simulate air quality data\n};\n\n// Return the message object to pass to the next node\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 460,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "33bf68c026863c5b",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Cabin temperature",
+        "func": "// Function to simulate cabin temperature data\nfunction simulateCabinTemperature() {\n    // Define the typical temperature range inside a vehicle cabin in degrees Celsius\n    const minTemp = 15; // Minimum cabin temperature\n    const maxTemp = 30; // Maximum cabin temperature\n\n    // Simulate daily variation based on external factors\n    // For simplicity, we'll use a sine wave to simulate day/night temperature cycles\n    let hours = new Date().getHours();\n    let dailyVariation = Math.sin((hours / 24) * 2 * Math.PI);\n\n    // Calculate the current cabin temperature within the range, adjusted for daily variation\n    let cabinTemperature = minTemp + (maxTemp - minTemp) / 2 + (dailyVariation * (maxTemp - minTemp) / 2);\n\n    // Add some randomness to simulate minor fluctuations\n    let randomFluctuation = (Math.random() - 0.5) * 2; // +/- 1 degree fluctuation\n    cabinTemperature += randomFluctuation;\n\n    return cabinTemperature;\n}\n\n// Call the simulateCabinTemperature function and assign its value to msg.payload.cabinTemperature\nmsg.payload = {\n    cabinTemperature: simulateCabinTemperature().toFixed(2) // Round to 2 decimal places\n};\n\n// Return the message object to pass to the next node\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 340,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "8211d83cf55d5739",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Seat belt engagement",
+        "func": "// Function to simulate seat belt engagement data\nfunction simulateSeatBeltEngagement() {\n    // Define the probability of seatbelt being engaged\n    const probabilityOfEngagement = 0.8; // 80% chance the seatbelt is engaged\n\n    // Generate a random number between 0 and 1\n    const randomNum = Math.random();\n\n    // Determine seatbelt status based on the random number and probability\n    const seatBeltEngaged = randomNum < probabilityOfEngagement;\n\n    return seatBeltEngaged;\n}\n\n// Call the simulateSeatBeltEngagement function and assign its value to msg.payload.seatBeltEngaged\nmsg.payload = {\n    seatBeltEngaged: simulateSeatBeltEngagement() ? \"Engaged\" : \"Disengaged\"\n};\n\n// Return the message object to pass to the next node\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 280,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "b1b2e0dabe8d51f5",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Tire pressure",
+        "func": "// Function to simulate tire pressure data for four tires\nfunction simulateTirePressure() {\n    // Define the normal tire pressure range in psi\n    const minPressure = 30; // Minimum normal pressure\n    const maxPressure = 35; // Maximum normal pressure\n\n    // Function to generate random pressure for a tire\n    const generatePressure = () => Math.floor(Math.random() * (maxPressure - minPressure + 1) + minPressure);\n\n    // Generate random pressure for each tire\n    let tirePressures = {\n        frontLeft: generatePressure(),\n        frontRight: generatePressure(),\n        rearLeft: generatePressure(),\n        rearRight: generatePressure()\n    };\n\n    return tirePressures;\n}\n\n// Call the simulateTirePressure function and assign its value to msg.payload\nmsg.payload = simulateTirePressure(); // Simulate tire pressure data\n\n// Return the message object to pass to the next node\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 400,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "f732f5d05b6c5080",
+        "type": "mqtt out",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Car Digital Display",
+        "topic": "carDigitalDisplay",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "d8f58a46d37c8ad5",
+        "x": 550,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "fb3753fc50c229f1",
+        "type": "inject",
+        "z": "3fb969b36fd6b3f2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 280,
+        "wires": [
+            [
+                "6046d3d1d47b8a20",
+                "aa447fca7758858c",
+                "c2df0ad83b9bfb8c",
+                "8211d83cf55d5739",
+                "33bf68c026863c5b",
+                "b1b2e0dabe8d51f5",
+                "1004dbe78567f9e7",
+                "1f63f5adb0f65de0",
+                "8d6d6923fa425e50"
+            ]
+        ]
+    },
+    {
+        "id": "288003a603a2d0ff",
+        "type": "mqtt in",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Car Digital Display",
+        "topic": "carDigitalDisplay",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "d8f58a46d37c8ad5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 750,
+        "y": 280,
+        "wires": [
+            [
+                "c7d2c2226cbe3255",
+                "688c973713f5566a",
+                "5226b2303b83d4d3",
+                "eec79d5681cb599b",
+                "03b0894144c2cf55",
+                "1e90c44a3ea3c730",
+                "0eae6946cb635844",
+                "aca399d52b1a0e33",
+                "e7e2718a0ab97a69"
+            ]
+        ]
+    },
+    {
+        "id": "2b328c9a8cf27e4b",
+        "type": "ui_gauge",
+        "z": "3fb969b36fd6b3f2",
+        "name": "",
+        "group": "fe0f0d80e92b1e38",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Engine Temperature ",
+        "label": "°F",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "300",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "100",
+        "seg2": "200",
+        "x": 1160,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c7d2c2226cbe3255",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Engine temperature",
+        "func": "// Check if the payload contains the 'engineTemperature' property\nif (msg.payload && msg.payload.hasOwnProperty('engineTemperature')) {\n    // If it does, construct a new message object with only the engineTemperature property\n    const newMsg = {\n        payload: msg.payload.engineTemperature\n    };\n    // Send the new message object to the next node\n    return newMsg;\n} else {\n    // If the payload doesn't contain the 'engineTemperature' property, discard the message\n    return null;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 120,
+        "wires": [
+            [
+                "2b328c9a8cf27e4b"
+            ]
+        ]
+    },
+    {
+        "id": "0eae6946cb635844",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Fuel consumption",
+        "func": "// Check if the payload contains the 'fuelConsumption' property\nif (msg.payload.hasOwnProperty('fuelConsumption')) {\n    // If it does, construct a new message object with only the fuelConsumption property\n    const newMsg = {\n        payload: msg.payload.fuelConsumption\n    };\n    // Pass the new message object to the next node\n    return newMsg;\n} else {\n    // If it doesn't, discard the message by returning null\n    return null;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 160,
+        "wires": [
+            [
+                "12ea6e8b4b99a6bc"
+            ]
+        ]
+    },
+    {
+        "id": "1e90c44a3ea3c730",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Speed",
+        "func": "// Check if the payload contains the 'speed' property\nif (msg.payload.hasOwnProperty('speed')) {\n    // If it does, construct a new message object with only the speed property\n    const newMsg = {\n        payload: msg.payload.speed\n    };\n    // Pass the new message object to the next node\n    return newMsg;\n} else {\n    // If it doesn't, discard the message by returning null\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 200,
+        "wires": [
+            [
+                "ed72fccb0e640edc"
+            ]
+        ]
+    },
+    {
+        "id": "03b0894144c2cf55",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Seat belt engagement",
+        "func": "// Check if the payload contains the 'seatBeltEngaged' property\nif (msg.payload.hasOwnProperty('seatBeltEngaged')) {\n    // If it does, construct a new message object with only the seatBeltEngaged property\n    const newMsg = {\n        payload: msg.payload.seatBeltEngaged\n    };\n    // If seat belt is disengaged, set the color to red\n    if (msg.payload.seatBeltEngaged !== \"Engaged\") {\n        newMsg.color = \"red\";\n    }\n    // Pass the new message object to the next node\n    return newMsg;\n} else {\n    // If the 'seatBeltEngaged' property is not found, discard the message by returning null\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 240,
+        "wires": [
+            [
+                "83557867113667e9"
+            ]
+        ]
+    },
+    {
+        "id": "688c973713f5566a",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Cabin temperature",
+        "func": "// Check if the payload contains the 'cabinTemperature' property\nif (msg.payload.hasOwnProperty('cabinTemperature')) {\n    // If it does, construct a new message object with only the 'cabinTemperature' property\n    const newMsg = {\n        payload: msg.payload.cabinTemperature\n    };\n\n    // Pass the new message object to the next node\n    return newMsg;\n} else {\n    // If the 'cabinTemperature' property is not found, discard the message by returning null\n    return null;\n}\n\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 320,
+        "wires": [
+            [
+                "4363576e73932952"
+            ]
+        ]
+    },
+    {
+        "id": "5226b2303b83d4d3",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Tire pressure",
+        "func": "// Check if the payload contains the 'frontLeft', 'frontRight', 'rearLeft', and 'rearRight' properties\nif (msg.payload.hasOwnProperty('frontLeft') && msg.payload.hasOwnProperty('frontRight') && msg.payload.hasOwnProperty('rearLeft') && msg.payload.hasOwnProperty('rearRight')) {\n    // If it does, pass it to the next node\n    return msg;\n} else {\n    // If it doesn't, discard the message by not returning anything\n    return null;\n}\n\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 540,
+        "wires": [
+            [
+                "9442d69ebcc14784"
+            ]
+        ]
+    },
+    {
+        "id": "eec79d5681cb599b",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Air quality",
+        "func": "// Check if the payload contains the 'airQualityIndex' property\nif (msg.payload.hasOwnProperty('airQualityIndex')) {\n    // If it does, construct a new message object with only the 'airQualityIndex' property\n    const newMsg = {\n        payload: msg.payload.airQualityIndex\n    };\n\n    // Pass the new message object to the next node\n    return newMsg;\n} else {\n    // If the 'airQualityIndex' property is not found, discard the message by returning null\n    return null;\n}\n\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 360,
+        "wires": [
+            [
+                "6336a3ad5d8f0ef8"
+            ]
+        ]
+    },
+    {
+        "id": "abd93d6a79772239",
+        "type": "ui_gauge",
+        "z": "3fb969b36fd6b3f2",
+        "name": "",
+        "group": "fe0f0d80e92b1e38",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Tire Pressure (Front Left)",
+        "label": "psi",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "20",
+        "seg2": "",
+        "x": 1290,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "9442d69ebcc14784",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Front Left",
+        "func": "// Check if the payload contains the 'frontLeft' property\nif (msg.payload.hasOwnProperty('frontLeft')) {\n    // If it does, construct a new message object with only the 'frontLeft' property\n    const newMsg = {\n        payload: msg.payload.frontLeft\n    };\n    // Pass the new message object to the next node\n    return newMsg;\n} else {\n    // If the payload doesn't contain the 'frontLeft' property, discard the message\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 480,
+        "wires": [
+            [
+                "abd93d6a79772239"
+            ]
+        ]
+    },
+    {
+        "id": "12ea6e8b4b99a6bc",
+        "type": "ui_chart",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Fuel Consumption",
+        "group": "876f099b54c7fe85",
+        "order": 0,
+        "width": "6",
+        "height": "8",
+        "label": "Fuel Consumption (mpg)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "60",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 1210,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed72fccb0e640edc",
+        "type": "ui_chart",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Speed",
+        "group": "876f099b54c7fe85",
+        "order": 1,
+        "width": "6",
+        "height": "7",
+        "label": "Speed (mph)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "250",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 1230,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "83557867113667e9",
+        "type": "ui_text",
+        "z": "3fb969b36fd6b3f2",
+        "group": "7ff60ea5ebc840d4",
+        "order": 0,
+        "width": "13",
+        "height": "5",
+        "name": "Seat Belt Engagement",
+        "label": "Seat Belt Engagement ",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1300,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4363576e73932952",
+        "type": "ui_text",
+        "z": "3fb969b36fd6b3f2",
+        "group": "0edf94b55d229c8a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "Cabin Temperature",
+        "label": "Cabin Temperature (°C)",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1250,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "6336a3ad5d8f0ef8",
+        "type": "ui_text",
+        "z": "3fb969b36fd6b3f2",
+        "group": "0edf94b55d229c8a",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "Air Quality",
+        "label": "Air quality (AQI)",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1210,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "1f63f5adb0f65de0",
+        "type": "openweathermap",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Birmingham",
+        "wtype": "current",
+        "lon": "",
+        "lat": "",
+        "city": "Birmingham",
+        "country": "United States",
+        "language": "en",
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "8d6d6923fa425e50",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Doors",
+        "func": "// Function to simulate door status\nfunction simulateDoorStatus() {\n    // Define the probability of all doors being closed\n    const probabilityOfClosed = 0.7; // 70% chance all doors are closed\n\n    // Generate a random number between 0 and 1\n    const randomNum = Math.random();\n\n    // Determine door status based on the random number and probability\n    const doorsClosed = randomNum < probabilityOfClosed;\n\n    // Return \"Closed\" if all doors are closed, otherwise return \"Open\"\n    return doorsClosed ? \"Closed\" : \"Open\";\n}\n\n// Call the simulateDoorStatus function and assign its value to msg.payload\nmsg.payload = simulateDoorStatus();\n\n// Return the message object to pass to the next node\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 560,
+        "wires": [
+            [
+                "f732f5d05b6c5080"
+            ]
+        ]
+    },
+    {
+        "id": "aca399d52b1a0e33",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Doors",
+        "func": "// Check if the payload contains the door status\nif (msg.payload === \"Open\" || msg.payload === \"Closed\") {\n    // Construct a new message object with only the door status payload value\n    const newMsg = {\n        payload: msg.payload\n    };\n    // Return the new message object to pass to the next node\n    return newMsg;\n} else {\n    // If the payload doesn't contain the door status, discard the message\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 400,
+        "wires": [
+            [
+                "025bae606bb2b4a7"
+            ]
+        ]
+    },
+    {
+        "id": "025bae606bb2b4a7",
+        "type": "ui_text",
+        "z": "3fb969b36fd6b3f2",
+        "group": "7ff60ea5ebc840d4",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Doors",
+        "label": "Doors",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1150,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e7e2718a0ab97a69",
+        "type": "function",
+        "z": "3fb969b36fd6b3f2",
+        "name": "Weather",
+        "func": "// Check if the payload contains the temperature in Celsius (tempc)\nif (msg.payload && typeof msg.payload.tempc !== 'undefined') {\n    // If it does, construct a new message object with only the temperature in Celsius\n    const newMsg = {\n        payload: msg.payload.tempc\n    };\n    // Send the new message object to the next node\n    return newMsg;\n} else {\n    // If the payload doesn't contain the temperature in Celsius, discard the message\n    return null;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 440,
+        "wires": [
+            [
+                "e32c873448c1efb8"
+            ]
+        ]
+    },
+    {
+        "id": "e32c873448c1efb8",
+        "type": "ui_text",
+        "z": "3fb969b36fd6b3f2",
+        "group": "0edf94b55d229c8a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Weather",
+        "label": "Weather (outside temperature°C)",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1140,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "d8f58a46d37c8ad5",
+        "type": "mqtt-broker",
+        "name": "Car Digital Display",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "fe0f0d80e92b1e38",
+        "type": "ui_group",
+        "name": "Engine Temperature & Tire Pressure",
+        "tab": "3d1720901d3ad1ba",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "876f099b54c7fe85",
+        "type": "ui_group",
+        "name": "Fuel Consumption &  Speed",
+        "tab": "9492832c1227a32b",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "7ff60ea5ebc840d4",
+        "type": "ui_group",
+        "name": "Seat Belt Engagement & Doors",
+        "tab": "e277a0a4da35a598",
+        "order": 1,
+        "disp": true,
+        "width": "15",
+        "collapse": false
+    },
+    {
+        "id": "0edf94b55d229c8a",
+        "type": "ui_group",
+        "name": "Display",
+        "tab": "561fc813c8756776",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "3d1720901d3ad1ba",
+        "type": "ui_tab",
+        "name": "Engine Temperature & Tire Pressure",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "9492832c1227a32b",
+        "type": "ui_tab",
+        "name": "Fuel Consumption & Speed",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "e277a0a4da35a598",
+        "type": "ui_tab",
+        "name": "Seat Belt Engagement & Doors",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "561fc813c8756776",
+        "type": "ui_tab",
+        "name": "Cabin Temperatures, air Quality & weather",
+        "icon": "dashboard",
+        "order": 4,
+        "disabled": false,
+        "hidden": false
+    }
+]
